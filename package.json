@@ -1,0 +1,28 @@
+{
+  "name": "hvac-better-build",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.35",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "next": "14",
+    "postcss": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-hook-form": "latest",
+    "tailwindcss": "^3.4.19",
+    "typescript": "latest"
+  }
+}
