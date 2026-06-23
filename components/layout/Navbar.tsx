@@ -18,6 +18,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -27,6 +28,10 @@ export function Navbar() {
       setScrolled(currentY > 8);
       setHidden(currentY > lastY && currentY > 120);
       lastY = currentY;
+
+      // Calculate scroll progress (0–100)
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? Math.min((currentY / docHeight) * 100, 100) : 0);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -43,12 +48,15 @@ export function Navbar() {
           : "bg-gradient-to-b from-navy/60 to-transparent border-b border-transparent"
       }`}
     >
-      {/* Scrolled: orange accent line at top */}
+      {/* Scroll progress bar — fills orange as user scrolls down the page */}
+      <div className="absolute bottom-0 left-0 h-[2px] bg-orange-gradient transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
+
+      {/* Orange accent stripe visible only when scrolled */}
       {scrolled && (
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-orange-gradient" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-orange via-orange-light to-orange-dark" />
       )}
 
-      <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <nav className={`mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-8 transition-all duration-500 ${scrolled ? "h-16" : "h-20"}`}>
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-gradient shadow-glow-sm transition-transform duration-300 group-hover:scale-110">
