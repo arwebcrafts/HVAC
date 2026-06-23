@@ -156,45 +156,45 @@ function CounterStat({
 export function HeroSection() {
   return (
     <section className="relative min-h-screen overflow-hidden bg-navy px-5 pb-24 pt-32 text-white md:pt-40 lg:px-8">
-      {/* ── Video Background ── */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster="/images/ac-after.jpg"
-        className="absolute inset-0 h-full w-full object-cover opacity-25"
-        aria-hidden="true"
-      >
-        <source src="/hero.mp4" type="video/mp4" />
-      </video>
-
-      {/* Cinematic dark overlay on top of video */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(7,16,31,0.93) 0%, rgba(10,22,40,0.85) 50%, rgba(15,32,64,0.90) 100%)",
-        }}
-        aria-hidden="true"
-      />
+      {/* ── Cinematic Background Image with Ken Burns zoom-pan ── */}
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/hero-bg.jpg"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover animate-ken-burns"
+          style={{ transformOrigin: "center center" }}
+        />
+        {/* Multi-layer cinematic overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(110deg, rgba(7,16,31,0.92) 0%, rgba(10,22,40,0.78) 45%, rgba(15,32,64,0.70) 100%)",
+          }}
+        />
+        {/* Bottom fade to section below */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-40"
+          style={{
+            background: "linear-gradient(to bottom, transparent, rgba(10,22,40,0.5))",
+          }}
+        />
+      </div>
 
       {/* Orange glow radial */}
       <div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-35"
         style={{
           background:
-            "radial-gradient(ellipse 80% 80% at 50% -20%, rgba(224,92,40,0.28) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 70% at 40% -10%, rgba(224,92,40,0.35) 0%, transparent 65%)",
         }}
         aria-hidden="true"
       />
 
-      {/* Animated background orbs (fallback + layer) */}
-      <div className="hero-particles" aria-hidden="true" />
-
-      {/* Grid overlay */}
+      {/* Subtle grid overlay */}
       <div
-        className="absolute inset-0 opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.035]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
