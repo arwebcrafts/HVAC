@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Learn about Summit Air Heating & Cooling and our customer-first HVAC service model.",
+  description: "Learn about HVAC Services and our customer-first HVAC service model.",
 };
 
 export default function AboutPage() {

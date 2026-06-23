@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Service Area",
-  description: "See the Florida cities served by Summit Air Heating & Cooling.",
+  description: "See the Florida cities served by HVAC Services.",
 };
 
 export default function ServiceAreaPage() {

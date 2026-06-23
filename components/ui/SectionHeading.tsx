@@ -23,7 +23,7 @@ export function SectionHeading({
           <p className="text-xs font-black uppercase tracking-[0.28em] text-orange">
             {eyebrow}
           </p>
-          <span className="h-px w-6 bg-orange" />
+          {isCenter && <span className="h-px w-6 bg-orange" />}
         </div>
       ) : null}
 

@@ -21,6 +21,8 @@ import {
   BadgeCheck,
   CalendarClock,
   Percent,
+  X,
+  Maximize2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -853,5 +855,214 @@ export function TrustStrip() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   7. RECENT JOBS GALLERY
+   ───────────────────────────────────────────────────────────────────── */
+const galleryJobs = [
+  {
+    title: "Trane 5-Ton AC Installation",
+    location: "Winter Park, FL",
+    category: "ac-install",
+    categoryLabel: "AC Installation",
+    image: "/images/gallery-ac-install.jpg",
+    description: "Replaced an aging, inefficient 10 SEER condenser unit with a high-efficiency Trane 5-Ton 18 SEER cooling system. The project involved laying a new level composite pad, replacing the electrical disconnect box, and installing premium copper pipes with clean UV-resistant insulation jacket.",
+  },
+  {
+    title: "Furnace Control Board & Tune-up",
+    location: "Windermere, FL",
+    category: "heating",
+    categoryLabel: "Heating",
+    image: "/images/gallery-furnace-service.jpg",
+    description: "Diagnosed a furnace short-cycling issue. Replaced a failing control board relays, cleaned the flame sensor, and tested gas valve pressure levels to ensure safe, efficient heating operation for the colder months.",
+  },
+  {
+    title: "Attic Ductwork Replacement",
+    location: "Orlando, FL",
+    category: "ductwork",
+    categoryLabel: "Ductwork",
+    image: "/images/gallery-duct-insulation.jpg",
+    description: "Installed completely new insulated silver-foil flexible ductwork and a galvanized supply plenum. Properly suspended all duct lines with durable support straps to maximize airflow distribution and eliminate attic heat gains.",
+  },
+  {
+    title: "Commercial Rooftop Unit Maintenance",
+    location: "Lake Nona, FL",
+    category: "maintenance",
+    categoryLabel: "Maintenance",
+    image: "/images/gallery-commercial-hvac.jpg",
+    description: "Performed quarterly PM servicing on a line of Carrier commercial package units on a retail building roof. Checked all refrigerant charges, tightened high-voltage electrical terminals, and thoroughly washed condenser coils.",
+  },
+  {
+    title: "Smart Thermostat Installation",
+    location: "Baldwin Park, FL",
+    category: "maintenance",
+    categoryLabel: "Maintenance",
+    image: "/images/gallery-smart-thermostat.jpg",
+    description: "Installed a Google Nest Smart Thermostat on a central hallway wall. Calibrated temperature sensing, configured Wi-Fi remote access, and optimized scheduled heating/cooling modes for up to 15% monthly energy savings.",
+  },
+  {
+    title: "Emergency AC Condenser Tune-up",
+    location: "Maitland, FL",
+    category: "ac-install",
+    categoryLabel: "AC Installation",
+    image: "/images/gallery-compressor-tuneup.jpg",
+    description: "Dispatched for a cooling system failure in midday heat. Checked operating pressures with digital manifold gauges, replaced a blown dual-run capacitor, washed down clogged condenser fins, and restored full cooling.",
+  },
+];
+
+const categories = [
+  { id: "all", label: "All Projects" },
+  { id: "ac-install", label: "AC Installation" },
+  { id: "heating", label: "Heating" },
+  { id: "ductwork", label: "Ductwork" },
+  { id: "maintenance", label: "Maintenance" },
+];
+
+export function RecentJobsGallery() {
+  const [filter, setFilter] = useState("all");
+  const [activeJob, setActiveJob] = useState<typeof galleryJobs[0] | null>(null);
+
+  const filteredJobs = filter === "all"
+    ? galleryJobs
+    : galleryJobs.filter((job) => job.category === filter);
+
+  return (
+    <AnimatedSection id="gallery" className="px-5 py-24 lg:px-8 bg-white">
+      <div className="mx-auto max-w-7xl">
+        <SectionHeading
+          eyebrow="Recent Work"
+          title="Recent Jobs"
+          accentTitle="Gallery"
+          subtitle="Real installations, repairs, and maintenance work completed by our team. Click any image to enlarge."
+        />
+
+        {/* Filter Tabs */}
+        <div className="mt-10 flex flex-wrap justify-center gap-2">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setFilter(cat.id)}
+              className={`rounded-full px-5 py-2.5 text-xs font-black transition-all duration-200 ${
+                filter === cat.id
+                  ? "bg-orange-gradient text-white shadow-glow-sm"
+                  : "bg-grey text-navy hover:bg-slate-200"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Gallery Grid */}
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredJobs.map((job) => (
+            <div
+              key={job.title}
+              onClick={() => setActiveJob(job)}
+              className="group relative cursor-pointer overflow-hidden rounded-3xl border border-slate-100 bg-grey shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-hover"
+            >
+              {/* Image Container */}
+              <div className="relative aspect-[4/3] w-full overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={job.image}
+                  alt={job.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                {/* Dark Hover Overlay */}
+                <div className="absolute inset-0 bg-[#07101f]/60 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100 flex items-center justify-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 border border-white/30 backdrop-blur-md text-white shadow-glow-sm transition-transform duration-300 scale-90 group-hover:scale-100">
+                    <Maximize2 size={20} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Text info */}
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="rounded-full bg-orange/10 px-3 py-1 text-[10px] font-black text-orange">
+                    {job.categoryLabel}
+                  </span>
+                  <span className="text-[10px] font-semibold text-muted">{job.location}</span>
+                </div>
+                <h3 className="text-base font-black text-navy leading-snug group-hover:text-orange transition-colors">
+                  {job.title}
+                </h3>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Lightbox Modal (Click to Enlarge) */}
+      {activeJob && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in"
+          onClick={() => setActiveJob(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setActiveJob(null)}
+              className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/85 transition-all duration-200 z-10 hover:scale-105"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="grid md:grid-cols-2">
+              {/* Left Column: Image */}
+              <div className="relative aspect-[4/3] md:aspect-auto md:h-[500px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activeJob.image}
+                  alt={activeJob.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Right Column: Copy & CTAs */}
+              <div className="p-8 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2.5 mb-4">
+                    <span className="rounded-full bg-orange/10 px-3 py-1 text-xs font-black text-orange">
+                      {activeJob.categoryLabel}
+                    </span>
+                    <span className="text-xs text-muted font-bold">{activeJob.location}</span>
+                  </div>
+                  <h3 className="text-2xl font-black text-navy mb-4 leading-tight">
+                    {activeJob.title}
+                  </h3>
+                  <p className="text-sm leading-7 text-muted mb-6">
+                    {activeJob.description}
+                  </p>
+                </div>
+
+                <div className="grid gap-3">
+                  <a
+                    href={siteConfig.phoneHref}
+                    className="flex items-center justify-center gap-2 rounded-full bg-orange-gradient py-4 text-sm font-black text-white shadow-glow transition hover:shadow-[0_0_50px_rgba(224,92,40,0.5)]"
+                  >
+                    <Phone size={16} />
+                    Inquire About This Service
+                  </a>
+                  <button
+                    onClick={() => setActiveJob(null)}
+                    className="rounded-full border border-slate-200 py-3 text-sm font-bold text-navy hover:bg-grey transition"
+                  >
+                    Close Gallery
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </AnimatedSection>
   );
 }

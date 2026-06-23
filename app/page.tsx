@@ -14,6 +14,7 @@ import {
   FAQSection,
   MaintenancePlans,
   QuoteEstimator,
+  RecentJobsGallery,
   SavingsCalculator,
   TrustStrip,
 } from "@/components/sections/ExtraSections";
@@ -44,6 +45,9 @@ export default function HomePage() {
 
       {/* Before & After drag slider */}
       <ResultsSection />
+
+      {/* Recent Jobs Gallery */}
+      <RecentJobsGallery />
 
       {/* Maintenance plans — recurring revenue */}
       <MaintenancePlans />

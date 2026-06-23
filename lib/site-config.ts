@@ -1,6 +1,6 @@
 export const siteConfig = {
-  name: "Summit Air Heating & Cooling",
-  shortName: "Summit Air",
+  name: "HVAC Services",
+  shortName: "HVAC Services",
   tagline: "Your Comfort, Our Priority",
   description:
     "Fast, reliable HVAC repair, installation, maintenance, and emergency service across Florida.",

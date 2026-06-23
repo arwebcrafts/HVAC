@@ -4,7 +4,7 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy policy for Summit Air Heating & Cooling.",
+  description: "Privacy policy for HVAC Services.",
 };
 
 export default function PrivacyPolicyPage() {
