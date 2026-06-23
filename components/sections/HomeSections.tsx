@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+
 import {
   ArrowRight,
   CheckCircle2,
@@ -154,16 +156,42 @@ function CounterStat({
 export function HeroSection() {
   return (
     <section className="relative min-h-screen overflow-hidden bg-navy px-5 pb-24 pt-32 text-white md:pt-40 lg:px-8">
-      {/* Animated background orbs */}
-      <div className="hero-particles" aria-hidden="true" />
+      {/* ── Video Background ── */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster="/images/ac-after.jpg"
+        className="absolute inset-0 h-full w-full object-cover opacity-25"
+        aria-hidden="true"
+      >
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
+
+      {/* Cinematic dark overlay on top of video */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(7,16,31,0.93) 0%, rgba(10,22,40,0.85) 50%, rgba(15,32,64,0.90) 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Orange glow radial */}
       <div
         className="absolute inset-0 opacity-30"
         style={{
           background:
-            "radial-gradient(ellipse 80% 80% at 50% -20%, rgba(224,92,40,0.25) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 80% at 50% -20%, rgba(224,92,40,0.28) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
+
+      {/* Animated background orbs (fallback + layer) */}
+      <div className="hero-particles" aria-hidden="true" />
+
       {/* Grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.04]"
@@ -440,7 +468,154 @@ export function WhyChooseUs() {
   );
 }
 
+// ── Drag-to-compare Before/After Slider ──────────────────────────
+function BeforeAfterSlider({
+  beforeSrc,
+  afterSrc,
+  title,
+  caption,
+  tag,
+}: {
+  beforeSrc: string;
+  afterSrc: string;
+  title: string;
+  caption: string;
+  tag: string;
+}) {
+  const [pos, setPos] = useState(50);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+
+  function calcPos(clientX: number) {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const raw = ((clientX - rect.left) / rect.width) * 100;
+    setPos(Math.min(Math.max(raw, 2), 98));
+  }
+
+  function onMouseDown() { dragging.current = true; }
+  function onMouseUp() { dragging.current = false; }
+  function onMouseMove(e: React.MouseEvent) { if (dragging.current) calcPos(e.clientX); }
+  function onTouchMove(e: React.TouchEvent) { calcPos(e.touches[0].clientX); }
+
+  return (
+    <div className="group overflow-hidden rounded-4xl bg-white shadow-card border border-slate-100 card-hover">
+      {/* Slider area */}
+      <div
+        ref={containerRef}
+        className="relative h-60 cursor-ew-resize select-none overflow-hidden"
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+        onMouseMove={onMouseMove}
+        onTouchMove={onTouchMove}
+        role="img"
+        aria-label={`Before and after comparison: ${title}`}
+      >
+        {/* AFTER — full width base */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={afterSrc}
+          alt={`After: ${title}`}
+          className="absolute inset-0 h-full w-full object-cover"
+          draggable={false}
+        />
+
+        {/* BEFORE — clipped by slider position */}
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ width: `${pos}%` }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={beforeSrc}
+            alt={`Before: ${title}`}
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ width: `${(100 / pos) * 100}%`, maxWidth: "none" }}
+            draggable={false}
+          />
+          {/* Before label */}
+          <div className="absolute bottom-2 left-2 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-sm">
+            Before
+          </div>
+        </div>
+
+        {/* After label */}
+        <div className="absolute bottom-2 right-2 rounded-full bg-black/40 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-sm">
+          After ✨
+        </div>
+
+        {/* Divider line */}
+        <div
+          className="absolute inset-y-0 z-10 w-0.5 bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+          style={{ left: `calc(${pos}% - 1px)` }}
+        />
+
+        {/* Drag handle */}
+        <div
+          className="absolute top-1/2 z-20 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_0_0_3px_rgba(224,92,40,0.5)] transition-transform duration-150 hover:scale-110"
+          style={{ left: `${pos}%` }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M7 4L3 10L7 16" stroke="#E05C28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M13 4L17 10L13 16" stroke="#E05C28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+
+        {/* Tag */}
+        <div className="absolute top-3 left-3 z-10">
+          <span className="rounded-full bg-orange-gradient px-2.5 py-1 text-[10px] font-black text-white shadow-sm">
+            {tag}
+          </span>
+        </div>
+
+        {/* Drag hint — fades after interaction */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none opacity-60 transition-opacity group-hover:opacity-0">
+          <span className="rounded-full bg-black/50 px-3 py-1 text-[10px] font-bold text-white backdrop-blur-sm">
+            ← drag to compare →
+          </span>
+        </div>
+      </div>
+
+      <div className="p-5">
+        <h3 className="text-lg font-black text-navy">{title}</h3>
+        <p className="mt-1.5 text-sm leading-6 text-muted">{caption}</p>
+        <Link
+          href="/contact"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-black text-orange hover:gap-2.5 transition-all duration-200"
+        >
+          Get this result <ArrowRight size={14} />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export function ResultsSection() {
+  const pairs = [
+    {
+      title: "AC Unit Replacement",
+      caption: "Old R-22 unit replaced with a new high-efficiency Bryant system.",
+      tag: "Energy Savings",
+      beforeSrc: "/images/ac-before.jpg",
+      afterSrc: "/images/ac-after.jpg",
+    },
+    {
+      title: "Air Duct Cleaning",
+      caption: "Ducts professionally cleaned — better air quality, lower energy bills.",
+      tag: "Air Quality",
+      beforeSrc: "/images/duct-before.jpg",
+      afterSrc: "/images/duct-after.jpg",
+    },
+    {
+      title: "Furnace Installation",
+      caption: "Full Lennox furnace replacement with neat, organized professional install.",
+      tag: "Heating Upgrade",
+      beforeSrc: "/images/furnace-before.jpg",
+      afterSrc: "/images/furnace-after.jpg",
+    },
+  ];
+
   return (
     <AnimatedSection className="px-5 py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -448,82 +623,11 @@ export function ResultsSection() {
           eyebrow="Before & After"
           title="See the Difference"
           accentTitle="We Make"
-          subtitle="Real results from real jobs. Clean installations, better airflow, improved efficiency."
+          subtitle="Drag the slider on each card to compare real before and after results from our jobs."
         />
         <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {[
-            {
-              title: "AC Unit Replacement",
-              caption: "Old R-22 unit replaced with a new high-efficiency system.",
-              tag: "Energy Savings",
-            },
-            {
-              title: "Air Duct Cleaning",
-              caption: "Ducts cleaned — better air quality, lower energy bills.",
-              tag: "Air Quality",
-            },
-            {
-              title: "Furnace Installation",
-              caption: "Full furnace replacement with neat, organized installation.",
-              tag: "Heating Upgrade",
-            },
-          ].map((card) => (
-            <div
-              key={card.title}
-              className="group overflow-hidden rounded-4xl bg-white shadow-card card-hover border border-slate-100"
-            >
-              {/* Before/After visual */}
-              <div className="relative grid h-56 grid-cols-2">
-                {/* Before */}
-                <div className="relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900">
-                  <div className="absolute inset-0 bg-slate-800/50" />
-                  <span className="relative text-xs font-black uppercase tracking-[0.25em] text-white/70">
-                    Before
-                  </span>
-                  {/* Label */}
-                  <div className="absolute bottom-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white/60 backdrop-blur-sm">
-                    Before
-                  </div>
-                </div>
-
-                {/* After */}
-                <div className="relative flex items-center justify-center overflow-hidden bg-orange-gradient">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange/80 to-orange-dark" />
-                  <span className="relative text-xs font-black uppercase tracking-[0.25em] text-white">
-                    After
-                  </span>
-                  {/* Label */}
-                  <div className="absolute bottom-2 right-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
-                    After ✨
-                  </div>
-                </div>
-
-                {/* Center divider */}
-                <div className="absolute inset-y-0 left-1/2 flex -translate-x-1/2 items-center">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-xl text-navy font-black text-xs z-10">
-                    ↔
-                  </div>
-                </div>
-
-                {/* Tag */}
-                <div className="absolute top-3 left-3 z-10">
-                  <span className="rounded-full bg-orange-gradient px-2.5 py-1 text-[10px] font-black text-white shadow-sm">
-                    {card.tag}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                <h3 className="text-lg font-black text-navy">{card.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{card.caption}</p>
-                <Link
-                  href="/contact"
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-black text-orange hover:gap-2.5 transition-all duration-200"
-                >
-                  Get this result <ArrowRight size={14} />
-                </Link>
-              </div>
-            </div>
+          {pairs.map((pair) => (
+            <BeforeAfterSlider key={pair.title} {...pair} />
           ))}
         </div>
       </div>
