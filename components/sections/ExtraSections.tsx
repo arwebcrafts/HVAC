@@ -165,12 +165,25 @@ function fmt(n: number) {
   return n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
+const BRAND_TIERS = [
+  { id: "goodman", name: "Standard (Goodman)", desc: "Reliable, value-focused, industry-standard efficiency. Great for rentals.", mult: 1.0, tag: "Value Option" },
+  { id: "bryant", name: "Comfort (Bryant)", desc: "Quieter, high-efficiency. Excellent balance of performance and upfront cost.", mult: 1.25, tag: "Most Popular" },
+  { id: "trane", name: "Premium (Trane)", desc: "Industry-leading efficiency, variable-speed comfort, ultra-durable build.", mult: 1.5, tag: "Premium Tier" },
+];
+
+const SEVERITY_LEVELS = [
+  { id: "minor", name: "Minor Fix", desc: "Capacitors, sensor clean, basic wiring, or simple thermostat swaps.", mult: 0.8, tag: "Light Work" },
+  { id: "moderate", name: "Moderate Repair", desc: "Blower motor, fan coil, leak repair, TXV valve, or control boards.", mult: 1.5, tag: "Standard Repair" },
+  { id: "major", name: "Major Overhaul", desc: "Compressor swap, evaporator coil, heat exchanger, or major leaks.", mult: 2.8, tag: "Complex Job" },
+];
+
 export function QuoteEstimator() {
   const [step, setStep] = useState(0);
   const [service, setService] = useState<string | null>(null);
+  const [detailOption, setDetailOption] = useState<string | null>(null); // brand or severity id
   const [homeSize, setHomeSize] = useState<string | null>(null);
   const [urgency, setUrgency] = useState<string | null>(null);
-  const [key, setKey] = useState(0); // for re-mounting animation
+  const [key, setKey] = useState(0);
 
   function advance() {
     setKey((k) => k + 1);
@@ -178,19 +191,65 @@ export function QuoteEstimator() {
   }
   function reset() {
     setService(null);
+    setDetailOption(null);
     setHomeSize(null);
     setUrgency(null);
     setStep(0);
     setKey((k) => k + 1);
   }
 
+  const isInstall = service === "ac-install" || service === "furnace-install";
+  const detailList = isInstall ? BRAND_TIERS : SEVERITY_LEVELS;
+  const activeDetail = detailList.find((d) => d.id === detailOption);
+  const detailMult = activeDetail ? activeDetail.mult : 1.0;
+
   const svc = SERVICES.find((s) => s.id === service);
   const range = svc && homeSize ? svc.ranges[homeSize] : null;
   const urgencyMult = urgency === "emergency" ? 1.25 : 1;
-  const low = range ? Math.round(range[0] * urgencyMult) : 0;
-  const high = range ? Math.round(range[1] * urgencyMult) : 0;
 
-  const steps = ["Service Type", "Home Size", "Urgency", "Your Estimate"];
+  // Calculate detailed items
+  const baseLow = range ? range[0] * detailMult : 0;
+  const baseHigh = range ? range[1] * detailMult : 0;
+
+  const partsLow = Math.round(baseLow * 0.6);
+  const partsHigh = Math.round(baseHigh * 0.6);
+
+  const laborLow = Math.round(baseLow * 0.4 * urgencyMult);
+  const laborHigh = Math.round(baseHigh * 0.4 * urgencyMult);
+
+  const taxCredit = isInstall ? Math.min(Math.round(baseLow * 0.3), 2000) : 0;
+
+  const totalLow = partsLow + laborLow;
+  const totalHigh = partsHigh + laborHigh;
+
+  const netLow = Math.max(totalLow - taxCredit, 0);
+  const netHigh = Math.max(totalHigh - taxCredit, 0);
+
+  const steps = ["Service", "Details", "Home Size", "Urgency", "Your Estimate"];
+
+  function handleLockEstimate() {
+    const serviceLabel = svc?.label || "HVAC Service";
+    const detailLabel = activeDetail?.name || "";
+    const sizeLabel = HOME_SIZES.find((h) => h.id === homeSize)?.label || "";
+    const urgencyLabel = URGENCY.find((u) => u.id === urgency)?.label || "";
+
+    const message = `Hello, I'd like to lock in my online estimate:\n- Service: ${serviceLabel}\n- Details: ${detailLabel}\n- Home Size: ${sizeLabel}\n- Urgency: ${urgencyLabel}\n- Estimated Range: ${fmt(netLow)} - ${fmt(netHigh)}`;
+
+    // Dispatch custom event to fill ContactForm
+    const event = new CustomEvent("populate-hvac-form", {
+      detail: {
+        message,
+        service: serviceLabel,
+      },
+    });
+    window.dispatchEvent(event);
+
+    // Scroll to contact form
+    const contactElem = document.getElementById("contact");
+    if (contactElem) {
+      contactElem.scrollIntoView({ behavior: "smooth" });
+    }
+  }
 
   return (
     <AnimatedSection id="quote" className="relative overflow-hidden bg-navy px-5 py-24 lg:px-8">
@@ -222,25 +281,25 @@ export function QuoteEstimator() {
               eyebrow="Instant Quote"
               title="Get Your Free"
               accentTitle="Cost Estimate"
-              subtitle="Answer 3 quick questions and get an instant ballpark estimate. No email required — zero pressure."
+              subtitle="Answer a few simple questions and get an instant ballpark estimate. No email required — zero pressure."
             />
 
             <div className="mt-8 grid gap-4">
               {[
                 {
                   icon: Clock,
-                  title: "Takes 30 seconds",
-                  sub: "Just 3 simple questions",
+                  title: "Takes 45 seconds",
+                  sub: "Just 4 simple questions",
                 },
                 {
                   icon: DollarSign,
-                  title: "No hidden fees",
-                  sub: "Transparent pricing, always",
+                  title: "Detailed cost breakdown",
+                  sub: "Transparent equipment & labor estimates",
                 },
                 {
                   icon: Shield,
                   title: "Zero obligation",
-                  sub: "No email or phone required",
+                  sub: "Auto-populate form to request site review",
                 },
               ].map((item) => {
                 const Icon = item.icon;
@@ -296,7 +355,7 @@ export function QuoteEstimator() {
                   ))}
                 </div>
                 <p className="text-xs font-semibold text-muted">
-                  Step {Math.min(step + 1, 4)} of 4 — {steps[Math.min(step, 3)]}
+                  Step {Math.min(step + 1, 5)} of 5 — {steps[Math.min(step, 4)]}
                 </p>
               </div>
 
@@ -316,7 +375,7 @@ export function QuoteEstimator() {
                               setService(svc.id);
                               advance();
                             }}
-                            className={`group flex items-center gap-2.5 rounded-2xl border p-3.5 text-left transition-all duration-200 hover:border-orange/40 hover:bg-orange/5 hover:shadow-md ${
+                            className={`group flex items-center gap-2.5 rounded-2xl border p-3.5 text-left transition-all duration-200 hover:border-orange/40 hover:bg-orange/5 hover:scale-[1.02] active:scale-[0.98] ${
                               service === svc.id
                                 ? "border-orange bg-orange/8 shadow-glow-sm"
                                 : "border-slate-200 bg-white"
@@ -333,8 +392,46 @@ export function QuoteEstimator() {
                   </div>
                 )}
 
-                {/* Step 1 — Home Size */}
+                {/* Step 1 — Details (Brand / Severity) */}
                 {step === 1 && (
+                  <div>
+                    <p className="mb-4 text-base font-black text-navy">
+                      {isInstall ? "Choose equipment tier preference:" : "Select service severity:"}
+                    </p>
+                    <div className="grid gap-2">
+                      {detailList.map((option) => (
+                        <button
+                          key={option.id}
+                          onClick={() => {
+                            setDetailOption(option.id);
+                            advance();
+                          }}
+                          className="group relative flex items-start gap-4 rounded-2xl border border-slate-200 p-4 text-left transition-all hover:border-orange/40 hover:bg-orange/5 hover:scale-[1.01] active:scale-[0.99]"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-black text-navy">{option.name}</p>
+                              <span className="rounded-full bg-orange/10 px-2 py-0.5 text-[9px] font-black text-orange">
+                                {option.tag}
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted mt-1 leading-normal">{option.desc}</p>
+                          </div>
+                          <ChevronRight size={16} className="text-muted mt-1" />
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => { setStep(0); setKey((k) => k + 1); }}
+                      className="mt-4 text-xs font-semibold text-muted hover:text-navy"
+                    >
+                      ← Back
+                    </button>
+                  </div>
+                )}
+
+                {/* Step 2 — Home Size */}
+                {step === 2 && (
                   <div>
                     <p className="mb-4 text-base font-black text-navy">What&apos;s your home size?</p>
                     <div className="grid gap-2">
@@ -345,7 +442,7 @@ export function QuoteEstimator() {
                             setHomeSize(size.id);
                             advance();
                           }}
-                          className="flex items-center justify-between rounded-2xl border border-slate-200 p-3.5 text-left transition-all hover:border-orange/40 hover:bg-orange/5"
+                          className="flex items-center justify-between rounded-2xl border border-slate-200 p-3.5 text-left transition-all hover:border-orange/40 hover:bg-orange/5 hover:scale-[1.01] active:scale-[0.99]"
                         >
                           <div>
                             <p className="text-sm font-black text-navy">{size.label}</p>
@@ -356,16 +453,16 @@ export function QuoteEstimator() {
                       ))}
                     </div>
                     <button
-                      onClick={() => { setStep(0); setKey((k) => k + 1); }}
-                      className="mt-3 text-xs font-semibold text-muted hover:text-navy"
+                      onClick={() => { setStep(1); setKey((k) => k + 1); }}
+                      className="mt-4 text-xs font-semibold text-muted hover:text-navy"
                     >
                       ← Back
                     </button>
                   </div>
                 )}
 
-                {/* Step 2 — Urgency */}
-                {step === 2 && (
+                {/* Step 3 — Urgency */}
+                {step === 3 && (
                   <div>
                     <p className="mb-4 text-base font-black text-navy">How urgent is this?</p>
                     <div className="grid gap-2.5">
@@ -376,7 +473,7 @@ export function QuoteEstimator() {
                             setUrgency(u.id);
                             advance();
                           }}
-                          className="flex items-center gap-4 rounded-2xl border border-slate-200 p-4 text-left transition-all hover:border-orange/40 hover:bg-orange/5"
+                          className="flex items-center gap-4 rounded-2xl border border-slate-200 p-4 text-left transition-all hover:border-orange/40 hover:bg-orange/5 hover:scale-[1.01] active:scale-[0.99]"
                         >
                           <span className="text-2xl">{u.icon}</span>
                           <div>
@@ -387,60 +484,124 @@ export function QuoteEstimator() {
                       ))}
                     </div>
                     <button
-                      onClick={() => { setStep(1); setKey((k) => k + 1); }}
-                      className="mt-3 text-xs font-semibold text-muted hover:text-navy"
+                      onClick={() => { setStep(2); setKey((k) => k + 1); }}
+                      className="mt-4 text-xs font-semibold text-muted hover:text-navy"
                     >
                       ← Back
                     </button>
                   </div>
                 )}
 
-                {/* Step 3 — Result */}
-                {step === 3 && range && (
-                  <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 border-2 border-green-200">
-                      <CheckCircle2 size={32} className="text-green-500" />
+                {/* Step 4 — Result (Upgraded Detailed Estimate) */}
+                {step === 4 && range && (
+                  <div className="text-left animate-fade-in">
+                    <div className="text-center mb-6">
+                      <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-green-50 border border-green-200">
+                        <CheckCircle2 size={26} className="text-green-500" />
+                      </div>
+                      <p className="text-xs font-bold text-muted uppercase tracking-wider mb-1">
+                        Estimated Cost Summary
+                      </p>
+                      <h4 className="text-sm font-black text-navy leading-snug">
+                        {svc?.label} — {activeDetail?.name}
+                      </h4>
                     </div>
-                    <p className="text-sm font-semibold text-muted uppercase tracking-wider mb-1">
-                      Estimated cost for {svc?.label}
-                    </p>
-                    <div className="my-4">
-                      <span className="text-5xl font-black text-navy">{fmt(low)}</span>
-                      <span className="text-2xl font-black text-muted mx-3">–</span>
-                      <span className="text-5xl font-black gradient-text">{fmt(high)}</span>
+
+                    {/* Breakdown Card */}
+                    <div className="rounded-2xl border border-slate-100 bg-grey/50 p-5 mb-5 space-y-3.5">
+                      {/* Parts & Equipment */}
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-semibold text-muted">Equipment & Parts</span>
+                        <span className="font-black text-navy">
+                          {fmt(partsLow)} – {fmt(partsHigh)}
+                        </span>
+                      </div>
+
+                      {/* Labor & Installation */}
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-semibold text-muted">Labor, Testing & Permits</span>
+                        <span className="font-black text-navy">
+                          {fmt(laborLow)} – {fmt(laborHigh)}
+                        </span>
+                      </div>
+
+                      {/* Incentives / Tax Credits */}
+                      {taxCredit > 0 && (
+                        <div className="flex justify-between items-center text-sm text-green-600 bg-green-50 rounded-xl p-2.5 border border-green-100">
+                          <span className="font-bold flex items-center gap-1">
+                            🌱 Federal Tax Credit (25C)
+                          </span>
+                          <span className="font-black">-{fmt(taxCredit)}</span>
+                        </div>
+                      )}
+
+                      <div className="h-px bg-slate-200" />
+
+                      {/* Total Net Estimate */}
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <span className="text-xs font-black uppercase text-orange tracking-wider">
+                            Estimated Net Range
+                          </span>
+                          <p className="text-[10px] text-muted">After eligible tax credits</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-2xl font-black text-orange">
+                            {fmt(netLow)} – {fmt(netHigh)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Urgency warning */}
                     {urgency === "emergency" && (
-                      <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-red-50 border border-red-200 px-3 py-1.5 text-xs font-bold text-red-600">
-                        🚨 Emergency rush fee included in estimate
+                      <div className="mb-5 inline-flex w-full items-center gap-2 rounded-xl bg-red-50 border border-red-200 p-2.5 text-xs font-bold text-red-600">
+                        <span>🚨</span>
+                        <span>Emergency dispatch & priority same-day fee included.</span>
                       </div>
                     )}
-                    <p className="text-xs text-muted leading-5 mb-6">
-                      Based on typical Florida rates for {HOME_SIZES.find((h) => h.id === homeSize)?.label} homes.
-                      Exact quote provided on-site before any work begins.
-                    </p>
 
-                    <div className="grid gap-3">
-                      <a
-                        href={siteConfig.phoneHref}
-                        className="flex items-center justify-center gap-2 rounded-full bg-orange-gradient px-6 py-4 text-sm font-black text-white shadow-glow transition hover:shadow-[0_0_50px_rgba(224,92,40,0.5)]"
-                      >
-                        <Phone size={16} />
-                        Book My Service — Get Exact Quote
-                      </a>
-                      <Link
-                        href="#contact"
-                        className="flex items-center justify-center gap-2 rounded-full border border-navy/15 px-6 py-3.5 text-sm font-black text-navy hover:bg-grey transition"
-                      >
-                        Schedule Online Instead
-                      </Link>
+                    {/* What's Included */}
+                    <div className="mb-6">
+                      <p className="text-[10.5px] font-black uppercase text-navy tracking-wider mb-2.5">
+                        What&apos;s Included in Estimate:
+                      </p>
+                      <ul className="grid grid-cols-2 gap-2 text-xs text-navy font-semibold">
+                        <li className="flex items-center gap-1.5">
+                          <CheckCircle2 size={13} className="text-green-500 shrink-0" />
+                          Old system recycling
+                        </li>
+                        <li className="flex items-center gap-1.5">
+                          <CheckCircle2 size={13} className="text-green-500 shrink-0" />
+                          EPA recovery compliance
+                        </li>
+                        <li className="flex items-center gap-1.5">
+                          <CheckCircle2 size={13} className="text-green-500 shrink-0" />
+                          10-Yr parts warranty
+                        </li>
+                        <li className="flex items-center gap-1.5">
+                          <CheckCircle2 size={13} className="text-green-500 shrink-0" />
+                          Air balance tuning
+                        </li>
+                      </ul>
                     </div>
 
-                    <button
-                      onClick={reset}
-                      className="mt-4 text-xs font-semibold text-muted hover:text-navy"
-                    >
-                      Start a new estimate →
-                    </button>
+                    {/* Actions */}
+                    <div className="grid gap-3">
+                      <button
+                        onClick={handleLockEstimate}
+                        className="flex items-center justify-center gap-2 rounded-full bg-orange-gradient px-6 py-4 text-sm font-black text-white shadow-glow transition hover:shadow-[0_0_50px_rgba(224,92,40,0.5)] hover:scale-[1.01] active:scale-[0.99]"
+                      >
+                        <Phone size={16} />
+                        Lock In This Estimate & Book
+                      </button>
+                      <button
+                        onClick={reset}
+                        className="rounded-full border border-slate-200 py-3 text-sm font-semibold text-muted hover:bg-grey hover:text-navy transition"
+                      >
+                        Start a new estimate →
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

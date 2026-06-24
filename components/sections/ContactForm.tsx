@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { services } from "@/lib/services";
@@ -22,7 +22,23 @@ export function ContactForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm<FormValues>();
+
+  useEffect(() => {
+    function handlePopulate(e: any) {
+      if (e.detail) {
+        if (e.detail.message) {
+          setValue("message", e.detail.message);
+        }
+        if (e.detail.service) {
+          setValue("service", e.detail.service);
+        }
+      }
+    }
+    window.addEventListener("populate-hvac-form" as any, handlePopulate);
+    return () => window.removeEventListener("populate-hvac-form" as any, handlePopulate);
+  }, [setValue]);
 
   async function onSubmit() {
     await new Promise((resolve) => setTimeout(resolve, 800));
