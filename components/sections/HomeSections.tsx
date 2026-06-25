@@ -160,10 +160,16 @@ export function HeroSection() {
       <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/hero-bg.jpg"
+          src="/images/hero-bg.webp"
           alt=""
           className="absolute inset-0 h-full w-full object-cover animate-ken-burns"
-          style={{ transformOrigin: "center center" }}
+          style={{
+            transformOrigin: "center center",
+            transform: "translateZ(0)",
+            willChange: "transform",
+            backfaceVisibility: "hidden",
+          }}
+          fetchPriority="high"
         />
         {/* Multi-layer cinematic overlay */}
         <div
@@ -597,22 +603,22 @@ export function ResultsSection() {
       title: "AC Unit Replacement",
       caption: "Old R-22 unit replaced with a new high-efficiency Bryant system.",
       tag: "Energy Savings",
-      beforeSrc: "/images/ac-before.jpg",
-      afterSrc: "/images/ac-after.jpg",
+      beforeSrc: "/images/ac-before.webp",
+      afterSrc: "/images/ac-after.webp",
     },
     {
       title: "Air Duct Cleaning",
       caption: "Ducts professionally cleaned — better air quality, lower energy bills.",
       tag: "Air Quality",
-      beforeSrc: "/images/duct-before.jpg",
-      afterSrc: "/images/duct-after.jpg",
+      beforeSrc: "/images/duct-before.webp",
+      afterSrc: "/images/duct-after.webp",
     },
     {
       title: "Furnace Installation",
       caption: "Full Lennox furnace replacement with neat, organized professional install.",
       tag: "Heating Upgrade",
-      beforeSrc: "/images/furnace-before.jpg",
-      afterSrc: "/images/furnace-after.jpg",
+      beforeSrc: "/images/furnace-before.webp",
+      afterSrc: "/images/furnace-after.webp",
     },
   ];
 

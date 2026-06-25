@@ -56,17 +56,17 @@ body {
 
 /* ─── Keyframe Animations ────────────────────────────────────────── */
 
-/* Ken Burns slow zoom-pan — makes a still image feel cinematic */
+/* Ken Burns — GPU-only: scale only, no translate, will-change forces compositing */
 @keyframes kenBurns {
-  0%   { transform: scale(1.0) translate(0, 0); }
-  25%  { transform: scale(1.06) translate(-1.5%, -0.5%); }
-  50%  { transform: scale(1.1) translate(-2%, 1%); }
-  75%  { transform: scale(1.06) translate(1%, 0.5%); }
-  100% { transform: scale(1.0) translate(0, 0); }
+  0%   { transform: scale3d(1.0, 1.0, 1); }
+  50%  { transform: scale3d(1.08, 1.08, 1); }
+  100% { transform: scale3d(1.0, 1.0, 1); }
 }
 .animate-ken-burns {
-  animation: kenBurns 20s ease-in-out infinite;
+  animation: kenBurns 22s ease-in-out infinite;
+  will-change: transform;
   transform-origin: center center;
+  backface-visibility: hidden;
 }
 
 /* Accordion open/close */
@@ -103,14 +103,16 @@ body {
   50%       { box-shadow: 0 0 30px rgba(224,92,40,0.7), 0 0 60px rgba(224,92,40,0.35); }
 }
 
+/* Shimmer uses translateX instead of background-position — stays on compositor thread */
 @keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0%   { background-position: -400% center; }
+  100% { background-position: 400% center; }
 }
 
+/* badge-pulse simplified — no opacity change to avoid repaints */
 @keyframes badge-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.05); opacity: 0.9; }
+  0%, 100% { transform: scale3d(1, 1, 1); }
+  50%       { transform: scale3d(1.04, 1.04, 1); }
 }
 
 @keyframes slide-in-right {
@@ -138,10 +140,11 @@ body {
   to   { transform: rotate(360deg); }
 }
 
+/* orb-float: use translate3d + scale3d to keep on GPU compositor */
 @keyframes orb-float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(30px, -20px) scale(1.05); }
-  66%       { transform: translate(-20px, 15px) scale(0.97); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+  33%       { transform: translate3d(20px, -14px, 0) scale3d(1.03, 1.03, 1); }
+  66%       { transform: translate3d(-14px, 10px, 0) scale3d(0.98, 0.98, 1); }
 }
 
 @keyframes count-up {
@@ -150,27 +153,29 @@ body {
 }
 
 /* ─── Utility Classes ────────────────────────────────────────────── */
-.animate-float        { animation: float 4s ease-in-out infinite; }
-.animate-pulse-glow   { animation: pulse-glow 2.5s ease-in-out infinite; }
-.animate-badge-pulse  { animation: badge-pulse 2s ease-in-out infinite; }
+.animate-float        { animation: float 4s ease-in-out infinite; will-change: transform; }
+.animate-pulse-glow   { animation: pulse-glow 2.5s ease-in-out infinite; will-change: box-shadow; }
+.animate-badge-pulse  { animation: badge-pulse 3s ease-in-out infinite; will-change: transform; }
 .animate-fade-in      { animation: fade-in 0.2s ease-out both; }
 .animate-scale-in     { animation: scale-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-.animate-spin-slow    { animation: spin-slow 20s linear infinite; }
-.animate-orb-float    { animation: orb-float 8s ease-in-out infinite; }
+.animate-spin-slow    { animation: spin-slow 20s linear infinite; will-change: transform; }
+.animate-orb-float    { animation: orb-float 10s ease-in-out infinite; will-change: transform; }
 
 .shimmer-text {
   background: linear-gradient(
     90deg,
     #E05C28 0%,
-    #ff8c5a 40%,
-    #E05C28 60%,
-    #c94a1e 100%
+    #ff8c5a 30%,
+    #fff5f0 50%,
+    #ff8c5a 70%,
+    #E05C28 100%
   );
-  background-size: 200% auto;
+  background-size: 300% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
+  animation: shimmer 3s linear infinite;
+  will-change: background-position;
 }
 
 .gradient-text {

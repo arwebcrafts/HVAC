@@ -1028,7 +1028,7 @@ const galleryJobs = [
     location: "Winter Park, FL",
     category: "ac-install",
     categoryLabel: "AC Installation",
-    image: "/images/gallery-ac-install.jpg",
+    image: "/images/gallery-ac-install.webp",
     description: "Replaced an aging, inefficient 10 SEER condenser unit with a high-efficiency Trane 5-Ton 18 SEER cooling system. The project involved laying a new level composite pad, replacing the electrical disconnect box, and installing premium copper pipes with clean UV-resistant insulation jacket.",
   },
   {
@@ -1036,7 +1036,7 @@ const galleryJobs = [
     location: "Windermere, FL",
     category: "heating",
     categoryLabel: "Heating",
-    image: "/images/gallery-furnace-service.jpg",
+    image: "/images/gallery-furnace-service.webp",
     description: "Diagnosed a furnace short-cycling issue. Replaced a failing control board relays, cleaned the flame sensor, and tested gas valve pressure levels to ensure safe, efficient heating operation for the colder months.",
   },
   {
@@ -1044,7 +1044,7 @@ const galleryJobs = [
     location: "Orlando, FL",
     category: "ductwork",
     categoryLabel: "Ductwork",
-    image: "/images/gallery-duct-insulation.jpg",
+    image: "/images/gallery-duct-insulation.webp",
     description: "Installed completely new insulated silver-foil flexible ductwork and a galvanized supply plenum. Properly suspended all duct lines with durable support straps to maximize airflow distribution and eliminate attic heat gains.",
   },
   {
@@ -1052,7 +1052,7 @@ const galleryJobs = [
     location: "Lake Nona, FL",
     category: "maintenance",
     categoryLabel: "Maintenance",
-    image: "/images/gallery-commercial-hvac.jpg",
+    image: "/images/gallery-commercial-hvac.webp",
     description: "Performed quarterly PM servicing on a line of Carrier commercial package units on a retail building roof. Checked all refrigerant charges, tightened high-voltage electrical terminals, and thoroughly washed condenser coils.",
   },
   {
@@ -1060,7 +1060,7 @@ const galleryJobs = [
     location: "Baldwin Park, FL",
     category: "maintenance",
     categoryLabel: "Maintenance",
-    image: "/images/gallery-smart-thermostat.jpg",
+    image: "/images/gallery-smart-thermostat.webp",
     description: "Installed a Google Nest Smart Thermostat on a central hallway wall. Calibrated temperature sensing, configured Wi-Fi remote access, and optimized scheduled heating/cooling modes for up to 15% monthly energy savings.",
   },
   {
@@ -1068,7 +1068,7 @@ const galleryJobs = [
     location: "Maitland, FL",
     category: "ac-install",
     categoryLabel: "AC Installation",
-    image: "/images/gallery-compressor-tuneup.jpg",
+    image: "/images/gallery-compressor-tuneup.webp",
     description: "Dispatched for a cooling system failure in midday heat. Checked operating pressures with digital manifold gauges, replaced a blown dual-run capacitor, washed down clogged condenser fins, and restored full cooling.",
   },
 ];

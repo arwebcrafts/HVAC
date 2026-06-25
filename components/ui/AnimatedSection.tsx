@@ -1,22 +1,60 @@
 "use client";
 
-import { motion, type HTMLMotionProps, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, type ReactNode, type HTMLAttributes } from "react";
 
-type AnimatedSectionProps = HTMLMotionProps<"section">;
+type AnimatedSectionProps = HTMLAttributes<HTMLElement> & {
+  children: ReactNode;
+  id?: string;
+};
 
-export function AnimatedSection({ children, className = "", ...props }: AnimatedSectionProps) {
-  const prefersReducedMotion = useReducedMotion();
+/**
+ * Lightweight scroll-reveal using IntersectionObserver + pure CSS transitions.
+ * No JavaScript runs per scroll frame — 100% compositor-thread animation.
+ */
+export function AnimatedSection({ children, className = "", id, ...props }: AnimatedSectionProps) {
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Respect prefers-reduced-motion
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      el.style.opacity = "1";
+      el.style.transform = "none";
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <motion.section
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 32 }}
-      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.55, ease: "easeOut" }}
+    <section
+      ref={ref}
+      id={id}
       className={className}
+      style={{
+        opacity: 0,
+        transform: "translateY(28px)",
+        transition: "opacity 0.5s ease-out, transform 0.5s ease-out",
+        willChange: "opacity, transform",
+      }}
       {...props}
     >
       {children}
-    </motion.section>
+    </section>
   );
 }
