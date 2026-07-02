@@ -1,27 +1,14 @@
-export const reviews = [
+export const serviceCommitments = [
   {
-    name: "James R.",
-    city: "Orlando, FL",
-    text: "AC died on a 98 degree Friday afternoon. They arrived in 90 minutes, explained the issue clearly, and had us cool by dinner.",
+    title: "24/7 Emergency Response",
+    text: "Cooling problems do not wait for business hours. Call Iris Cooling LLC anytime for urgent HVAC help in Palm Beach County.",
   },
   {
-    name: "Maria S.",
-    city: "Tampa, FL",
-    text: "Very professional from estimate to install. The new system works perfectly and the final price matched the quote.",
+    title: "Clear Communication",
+    text: "We explain what is wrong, what options you have, and what the repair or replacement will cost before work begins.",
   },
   {
-    name: "Kevin T.",
-    city: "Miami, FL",
-    text: "Our furnace went out overnight. They had a tech at our door by 8am and fixed it in under an hour.",
-  },
-  {
-    name: "Sandra L.",
-    city: "Jacksonville, FL",
-    text: "We use them for annual maintenance. Always on time, always honest, and never pushy about repairs.",
-  },
-  {
-    name: "Tom M.",
-    city: "Sarasota, FL",
-    text: "They replaced our HVAC system, helped with financing, and left the installation area spotless.",
+    title: "Residential and Commercial HVAC",
+    text: "From home AC repairs to commercial cooling service, Iris Cooling LLC handles installation, maintenance, and emergency calls.",
   },
 ];

@@ -18,16 +18,17 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | HVAC Repair & Installation in Florida`,
+    default: `${siteConfig.name} | 24/7 HVAC Repair in Delray Beach, FL`,
     template: `%s | ${siteConfig.shortName}`,
   },
   description: siteConfig.description,
   keywords: [
-    "HVAC repair Florida",
-    "AC repair Orlando",
-    "emergency HVAC",
-    "AC installation Florida",
-    "heating and cooling company",
+    "Iris Cooling LLC",
+    "HVAC Delray Beach",
+    "AC repair Palm Beach County",
+    "emergency HVAC Delray Beach",
+    "AC installation Boca Raton",
+    "24 hour HVAC Florida",
   ],
   openGraph: {
     title: siteConfig.name,

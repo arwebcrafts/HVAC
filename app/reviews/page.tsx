@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { Star } from "lucide-react";
+import { ExternalLink, Phone, Star } from "lucide-react";
 
+import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { reviews } from "@/lib/reviews";
+import { serviceCommitments } from "@/lib/reviews";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Reviews",
-  description: "Read customer reviews for fast, professional HVAC repair and installation service.",
+  description: `See how ${siteConfig.name} serves Delray Beach and Palm Beach County with 24/7 HVAC repair and installation.`,
 };
 
 export default function ReviewsPage() {
@@ -14,25 +16,40 @@ export default function ReviewsPage() {
     <section className="px-5 py-32 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          eyebrow="Customer reviews"
-          title="Proof that service quality matters"
-          subtitle="Reviews highlight what customers care about most: fast response, fair pricing, clean work, and clear communication."
+          eyebrow="Customer experience"
+          title="Trusted local HVAC help in Palm Beach County"
+          subtitle={`${siteConfig.name} is listed on Google Maps with ${siteConfig.googleRating.count} reviews. For the fastest response, call ${siteConfig.phone} any time.`}
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review) => (
-            <figure key={review.name} className="rounded-[2rem] bg-white p-7 shadow-card">
-              <div className="flex gap-1 text-[#F59E0B]">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Star key={index} size={18} fill="currentColor" />
-                ))}
-              </div>
-              <blockquote className="mt-5 leading-7 text-muted">{review.text}</blockquote>
-              <figcaption className="mt-6 font-black text-navy">
-                {review.name}
-                <span className="block text-sm font-semibold text-muted">{review.city}</span>
-              </figcaption>
-            </figure>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {serviceCommitments.map((item) => (
+            <article key={item.title} className="rounded-[2rem] bg-white p-7 shadow-card">
+              <Star className="text-orange" size={24} />
+              <h2 className="mt-4 text-xl font-black text-navy">{item.title}</h2>
+              <p className="mt-3 leading-7 text-muted">{item.text}</p>
+            </article>
           ))}
+        </div>
+
+        <div className="mt-12 rounded-[2rem] bg-navy p-8 text-center text-white">
+          <p className="text-sm font-black uppercase tracking-[0.2em] text-orange">
+            Google Business Profile
+          </p>
+          <h2 className="mt-4 text-3xl font-black">Find Iris Cooling LLC on Google Maps</h2>
+          <p className="mx-auto mt-4 max-w-2xl leading-7 text-white/70">
+            View directions, business hours, and public Google reviews for our Delray Beach HVAC
+            service.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <ButtonLink href={siteConfig.socials.google}>
+              <ExternalLink size={16} />
+              Open Google Listing
+            </ButtonLink>
+            <ButtonLink href={siteConfig.phoneHref} variant="outline">
+              <Phone size={16} />
+              Call {siteConfig.phone}
+            </ButtonLink>
+          </div>
         </div>
       </div>
     </section>

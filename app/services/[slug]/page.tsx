@@ -27,7 +27,7 @@ export function generateMetadata({ params }: ServicePageProps): Metadata {
   }
 
   return {
-    title: `${service.title} in Florida`,
+    title: `${service.title} in Delray Beach & Palm Beach County`,
     description: service.longDescription,
     alternates: {
       canonical: `/services/${service.slug}`,
@@ -62,7 +62,7 @@ export default function ServicePage({ params }: ServicePageProps) {
               {service.eyebrow}
             </p>
             <h1 className="mt-5 text-5xl font-black tracking-tight md:text-7xl">
-              {service.title} in Florida
+              {service.title} in Delray Beach & Palm Beach County
             </h1>
             <p className="mt-6 max-w-2xl text-xl leading-8 text-white/78">
               {service.longDescription}

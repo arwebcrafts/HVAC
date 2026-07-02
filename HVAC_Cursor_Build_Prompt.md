@@ -8,8 +8,7 @@ No specific business name, address, or logo. Every placeholder reads like a real
 ## Stack
 
 ```
-Framework:        Next.js 14 (App Router)
-Styling:          Tailwind CSS v3
+
 Animations:       Framer Motion
 Icons:            Lucide React
 Fonts:            Inter — via next/font/google
@@ -18,7 +17,7 @@ Schema Markup:    JSON-LD in layout.tsx <head>
 Maps:             Google Maps iframe embed (placeholder API key)
 Video:            HTML5 <video> tag — Pexels free HVAC video URL
 Image handling:   next/image (lazy load, width/height required)
-Deployment-ready: Vercel / Netlify
+Deployment-ready: Vercel
 ```
 
 ---

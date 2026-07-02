@@ -9,7 +9,6 @@ export function localBusinessSchema() {
     name: siteConfig.name,
     url: siteConfig.url,
     telephone: siteConfig.phone,
-    email: siteConfig.email,
     priceRange: "$$",
     image: `${siteConfig.url}/og-image.jpg`,
     address: {
@@ -20,6 +19,11 @@ export function localBusinessSchema() {
       postalCode: siteConfig.address.zip,
       addressCountry: siteConfig.address.country,
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: siteConfig.geo.latitude,
+      longitude: siteConfig.geo.longitude,
+    },
     areaServed: cities.map((city) => ({
       "@type": "City",
       name: `${city}, FL`,
@@ -27,22 +31,20 @@ export function localBusinessSchema() {
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "07:00",
-        closes: "19:00",
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: "Saturday",
-        opens: "08:00",
-        closes: "17:00",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "00:00",
+        closes: "23:59",
       },
     ],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "127",
-    },
+    sameAs: [siteConfig.socials.google],
   };
 }
 
@@ -56,10 +58,16 @@ export function serviceSchema(service: Service) {
       "@type": "HVACBusiness",
       name: siteConfig.name,
       telephone: siteConfig.phone,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: siteConfig.address.city,
+        addressRegion: siteConfig.address.state,
+        addressCountry: siteConfig.address.country,
+      },
     },
     areaServed: {
-      "@type": "State",
-      name: "Florida",
+      "@type": "AdministrativeArea",
+      name: siteConfig.county,
     },
   };
 }

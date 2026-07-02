@@ -362,7 +362,7 @@ export default function QuotePage() {
                           <input
                             type="tel"
                             className="form-input"
-                            placeholder="(555) 000-0000"
+                            placeholder="(561) 584-3940"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                           />

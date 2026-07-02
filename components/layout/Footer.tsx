@@ -49,8 +49,8 @@ export function Footer() {
           </Link>
 
           <p className="mt-5 max-w-xs leading-7 text-white/60 text-sm">
-            Professional HVAC repair, replacement, air quality, and maintenance
-            service across Florida. Licensed & insured.
+            {siteConfig.name} provides HVAC repair, replacement, air quality, and
+            maintenance service across {siteConfig.county}. Open 24 hours.
           </p>
 
           {/* Contact quick-links */}
@@ -62,13 +62,15 @@ export function Footer() {
               <Phone size={15} className="text-orange" />
               {siteConfig.phone}
             </a>
-            <a
-              href={`mailto:${siteConfig.email}`}
-              className="flex items-center gap-2.5 text-sm text-white/70 transition hover:text-orange"
-            >
-              <Mail size={15} className="text-orange" />
-              {siteConfig.email}
-            </a>
+            {siteConfig.email ? (
+              <a
+                href={`mailto:${siteConfig.email}`}
+                className="flex items-center gap-2.5 text-sm text-white/70 transition hover:text-orange"
+              >
+                <Mail size={15} className="text-orange" />
+                {siteConfig.email}
+              </a>
+            ) : null}
             <span className="flex items-start gap-2.5 text-sm text-white/70">
               <MapPin size={15} className="text-orange mt-0.5 shrink-0" />
               {siteConfig.address.street}, {siteConfig.address.city},{" "}

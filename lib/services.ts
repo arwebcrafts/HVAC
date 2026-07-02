@@ -29,7 +29,7 @@ export const services: Service[] = [
     eyebrow: "Same-day cooling help",
     description: "Fast diagnosis and repair for all major AC brands.",
     longDescription:
-      "When Florida heat hits hard, our certified technicians find the issue quickly, explain your options clearly, and complete most cooling repairs the same day.",
+      "When South Florida heat hits hard, our technicians find the issue quickly, explain your options clearly, and complete most cooling repairs the same day.",
     icon: Wind,
     highlights: ["24/7 emergency dispatch", "Upfront repair pricing", "All brands serviced"],
     faqs: [
@@ -109,7 +109,7 @@ export const services: Service[] = [
     eyebrow: "Efficient year-round comfort",
     description: "Heat pump repair, replacement, and seasonal tune-ups.",
     longDescription:
-      "Heat pumps are ideal for many Florida homes. We maintain, repair, and install systems that cool efficiently and provide dependable heating when temperatures dip.",
+      "Heat pumps are ideal for many Palm Beach County homes. We maintain, repair, and install systems that cool efficiently and provide dependable heating when temperatures dip.",
     icon: Thermometer,
     highlights: ["Repair and replacement", "Seasonal tune-ups", "Efficiency optimization"],
     faqs: [

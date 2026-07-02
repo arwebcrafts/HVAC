@@ -23,6 +23,7 @@ import {
   Percent,
   X,
   Maximize2,
+  MapPin,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -985,12 +986,12 @@ export function FAQSection() {
    6. TRUST & CREDENTIAL STRIP
    ───────────────────────────────────────────────────────────────────── */
 const credentials = [
-  { icon: BadgeCheck, label: "NATE Certified", sub: "All technicians" },
-  { icon: Shield, label: "Fully Insured", sub: "$2M liability coverage" },
-  { icon: Star, label: "5.0 Google Rating", sub: "127 reviews" },
+  { icon: Clock, label: "Open 24 Hours", sub: "Emergency HVAC" },
+  { icon: Shield, label: "Licensed & Insured", sub: siteConfig.county },
+  { icon: MapPin, label: "Delray Beach, FL", sub: "Local contractor" },
   { icon: Percent, label: "0% Financing", sub: "On new systems" },
-  { icon: Zap, label: "Same-Day Service", sub: "In most cases" },
-  { icon: ThumbsUp, label: "Satisfaction Guarantee", sub: "30-day promise" },
+  { icon: Zap, label: "Same-Day Service", sub: "When available" },
+  { icon: ThumbsUp, label: "Upfront Pricing", sub: "Before work starts" },
 ];
 
 export function TrustStrip() {
@@ -1025,7 +1026,7 @@ export function TrustStrip() {
 const galleryJobs = [
   {
     title: "Trane 5-Ton AC Installation",
-    location: "Winter Park, FL",
+    location: "Delray Beach, FL",
     category: "ac-install",
     categoryLabel: "AC Installation",
     image: "/images/gallery-ac-install.webp",
@@ -1033,7 +1034,7 @@ const galleryJobs = [
   },
   {
     title: "Furnace Control Board & Tune-up",
-    location: "Windermere, FL",
+    location: "Boca Raton, FL",
     category: "heating",
     categoryLabel: "Heating",
     image: "/images/gallery-furnace-service.webp",
@@ -1041,7 +1042,7 @@ const galleryJobs = [
   },
   {
     title: "Attic Ductwork Replacement",
-    location: "Orlando, FL",
+    location: "Boynton Beach, FL",
     category: "ductwork",
     categoryLabel: "Ductwork",
     image: "/images/gallery-duct-insulation.webp",
@@ -1049,7 +1050,7 @@ const galleryJobs = [
   },
   {
     title: "Commercial Rooftop Unit Maintenance",
-    location: "Lake Nona, FL",
+    location: "West Palm Beach, FL",
     category: "maintenance",
     categoryLabel: "Maintenance",
     image: "/images/gallery-commercial-hvac.webp",
@@ -1057,7 +1058,7 @@ const galleryJobs = [
   },
   {
     title: "Smart Thermostat Installation",
-    location: "Baldwin Park, FL",
+    location: "Lake Worth Beach, FL",
     category: "maintenance",
     categoryLabel: "Maintenance",
     image: "/images/gallery-smart-thermostat.webp",
@@ -1065,7 +1066,7 @@ const galleryJobs = [
   },
   {
     title: "Emergency AC Condenser Tune-up",
-    location: "Maitland, FL",
+    location: "Wellington, FL",
     category: "ac-install",
     categoryLabel: "AC Installation",
     image: "/images/gallery-compressor-tuneup.webp",

@@ -94,7 +94,7 @@ export function ContactForm() {
           <input
             type="tel"
             className="form-input"
-            placeholder="(555) 000-0000"
+            placeholder="(561) 584-3940"
             {...register("phone", { required: true })}
           />
           {errors.phone ? (

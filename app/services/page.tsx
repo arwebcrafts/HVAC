@@ -5,10 +5,11 @@ import { ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { services } from "@/lib/services";
 
+import { siteConfig } from "@/lib/site-config";
+
 export const metadata: Metadata = {
   title: "HVAC Services",
-  description:
-    "Explore AC repair, AC installation, furnace service, heat pumps, emergency HVAC, duct cleaning, and maintenance plans.",
+  description: `${siteConfig.name} offers AC repair, installation, emergency HVAC, duct cleaning, and maintenance in Delray Beach and Palm Beach County.`,
 };
 
 export default function ServicesPage() {
